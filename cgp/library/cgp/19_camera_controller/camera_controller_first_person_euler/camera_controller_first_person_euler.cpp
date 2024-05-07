@@ -64,7 +64,7 @@ namespace cgp
 		assert_cgp_no_msg(window != nullptr);
 		if (!is_active) return;
 
-		float const magnitude = 2*inputs->time_interval;
+		float const magnitude = 100*inputs->time_interval;
 
 		// displacement with WSAD
 		if (inputs->keyboard.is_pressed(GLFW_KEY_R))

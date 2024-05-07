@@ -194,6 +194,7 @@ void scene_structure::display_frame()
 		draw_wireframe(terrain, environment);
 		draw_wireframe(pyramid, environment);
 		draw_wireframe(camel, environment);
+		draw_wireframe(sphinx, environment);
 	}
 
 	// Set additional uniform parameters to the shader
