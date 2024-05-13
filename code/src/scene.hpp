@@ -5,6 +5,8 @@
 #include "environment.hpp"
 #include "pyramid.hpp"
 #include "terrain.hpp"
+#include "my_bird.hpp"
+#include "my_camera_controller.hpp"
 #include <SDL.h>
 
 // This definitions allow to use the structures: mesh, mesh_drawable, etc. without mentionning explicitly cgp::
@@ -36,7 +38,7 @@ struct scene_structure : cgp::scene_inputs_generic {
 	// ****************************** //
 	// Elements and shapes of the scene
 	// ****************************** //
-	camera_controller_first_person_euler camera_control;
+	my_camera_controller camera_control;
 	camera_projection_perspective camera_projection;
 	window_structure window;
 
@@ -56,6 +58,7 @@ struct scene_structure : cgp::scene_inputs_generic {
 	mesh_drawable camel;
 	mesh_drawable sphinx;
 	mesh_drawable tree;
+	BirdMesh bird_mesh;
 	std::vector<int> x_rand_trees, y_rand_trees;
 
 	/* mesh_drawable water;
@@ -69,6 +72,9 @@ struct scene_structure : cgp::scene_inputs_generic {
     Uint32 wavLength;
     Uint8* wavBuffer;
 	SDL_AudioDeviceID deviceId;
+
+	// The entire hierarchy
+	cgp::hierarchy_mesh_drawable hierarchy;
 
 
 	// ****************************** //

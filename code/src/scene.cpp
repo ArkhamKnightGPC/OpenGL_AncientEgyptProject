@@ -62,10 +62,9 @@ void scene_structure::initialize()
 	// ********************************************** //
 	camera_control.initialize(inputs, window); 
 	camera_control.set_rotation_axis_z(); // camera rotates around z-axis
-	//   look_at(camera_position, targeted_point, up_direction)
-	camera_control.look_at(
-		{ 5.0f, -4.0f, 3.5f } /* position of the camera in the 3D scene */,
-		{0,0,0} /* targeted point in 3D scene */,
+	camera_control.look_at(//   look_at(camera_position, targeted_point, up_direction)
+		{0,0,15} /* position of the camera in the 3D scene */,
+		{10,0,15} /* targeted point in 3D scene */,
 		{0,0,1} /* direction of the "up" vector */);
 
 	// Display general information
@@ -119,7 +118,7 @@ void scene_structure::initialize()
 
 	tree.initialize_data_on_gpu(mesh_load_file_obj(project::path + "assets/palm_tree/palm_tree.obj"));
 	tree.model.rotation = rotation_transform::from_axis_angle({ 1,0,0 }, Pi / 2.0f);
-	tree.model.scaling = 3;
+	tree.model.scaling = 9;
 	tree.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/palm_tree/palm_tree.jpg", GL_REPEAT, GL_REPEAT);
 
 	for(int i=0; i<100; i++){
@@ -136,6 +135,8 @@ void scene_structure::initialize()
 	camel.shader = shader_standard;
 	terrain.shader = shader_standard;
 	sphinx.shader = shader_standard;
+
+	bird_mesh.initializeBirdMesh();
 
     SDL_Init(SDL_INIT_AUDIO); // Initialize SDL
     SDL_LoadWAV("../sounds/uncharted.wav", &wavSpec, &wavBuffer, &wavLength); //  load .wav file
@@ -209,6 +210,10 @@ void scene_structure::display_frame()
 	environment.uniform_generic.uniform_vec3["fog_color"] = gui.fog_color;
 
 	environment.background_color = gui.fog_color;
+
+	vec3 camera_position = camera_control.camera_model.position_camera;
+	bird_mesh.translateBirdMesh(camera_position[0]+15, camera_position[1], camera_position[2]-5); //we want bird to follow camera movement
+	bird_mesh.drawBirdMesh(environment);
 	
 	// Wait for the sound to finish playing
     if (SDL_GetQueuedAudioSize(deviceId) == 0) {
