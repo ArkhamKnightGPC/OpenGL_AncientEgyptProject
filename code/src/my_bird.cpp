@@ -38,6 +38,10 @@ namespace cgp
         hierarchy.add(wing_right, "Wing right", "Body", {-1.0f, .5f, 0});
         hierarchy.add(wing_son_left, "Wing son left", "Wing left", {0, 0, 0});
         hierarchy.add(wing_son_right, "Wing son right", "Wing right", {0, 0, 0});
+
+        rotation_initial = rotation_transform::from_axis_angle({0, 0, 1}, M_PI/2.0)*rotation_transform::from_axis_angle({0, 1, 0}, M_PI/2.0);
+        hierarchy["Body"].transform_local.rotation = rotation_initial;
+        hierarchy.update_local_to_global_coordinates();
     }
 
     void BirdMesh::drawBirdMesh(environment_structure &environment){
@@ -58,7 +62,6 @@ namespace cgp
 
         hierarchy["Head"].transform_local.rotation = rotation_transform::from_axis_angle({0, 1, 0}, head_oscillation);
 
-        // This function must be called before the drawing in order to propagate the deformations through the hierarchy
         hierarchy.update_local_to_global_coordinates();
 
         draw(hierarchy, environment);
@@ -66,6 +69,11 @@ namespace cgp
 
     void BirdMesh::translateBirdMesh(float dx, float dy, float dz){
         hierarchy["Body"].transform_local.translation = vec3{dx, dy, dz};
+        hierarchy.update_local_to_global_coordinates();
+    }
+
+    void BirdMesh::rotateBirdMesh(const mat3 &camera_matrix){
+        hierarchy["Body"].transform_local.rotation = rotation_transform::from_matrix(camera_matrix)*rotation_initial;
         hierarchy.update_local_to_global_coordinates();
     }
 }

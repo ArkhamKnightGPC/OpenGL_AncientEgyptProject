@@ -61,7 +61,7 @@ void scene_structure::initialize()
 	// Set the behavior of the camera and its initial position
 	// ********************************************** //
 	camera_control.initialize(inputs, window); 
-	camera_control.set_rotation_axis_z(); // camera rotates around z-axis
+	//camera_control.set_rotation_axis_z(); // camera rotates around z-axis
 	camera_control.look_at(//   look_at(camera_position, targeted_point, up_direction)
 		{0,0,15} /* position of the camera in the 3D scene */,
 		{10,0,15} /* targeted point in 3D scene */,
@@ -151,7 +151,6 @@ void scene_structure::initialize()
 // Note that you should avoid having costly computation and large allocation defined there. This function is mostly used to call the draw() functions on pre-existing data.
 void scene_structure::display_frame()
 {
-
 	// Set the light to the current position of the camera
 	environment.light = camera_control.camera_model.position();
 
@@ -212,7 +211,7 @@ void scene_structure::display_frame()
 	environment.background_color = gui.fog_color;
 
 	vec3 camera_position = camera_control.camera_model.position_camera;
-	bird_mesh.translateBirdMesh(camera_position[0]+15, camera_position[1], camera_position[2]-5); //we want bird to follow camera movement
+	bird_mesh.translateBirdMesh(camera_position[0]+20, camera_position[1], camera_position[2]); //we want bird to follow camera movement
 	bird_mesh.drawBirdMesh(environment);
 	
 	// Wait for the sound to finish playing
@@ -247,6 +246,8 @@ void scene_structure::keyboard_event()
 void scene_structure::idle_frame()
 {
 	camera_control.idle_frame(environment.camera_view);
+	rotation_transform aux = camera_control.camera_model.orientation();
+	bird_mesh.rotateBirdMesh(aux.matrix());
 }
 
 

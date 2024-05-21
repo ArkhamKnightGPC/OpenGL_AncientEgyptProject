@@ -20,3 +20,23 @@ Then in the **project/code directory** directory, you can use the provided *CMak
 > make
 
 >./project
+
+## Controls
+
+### Displacement with WASD
+
+-
+-
+-
+
+### Displacement with arrows
+
+-
+-
+-
+-
+
+### Mouse controls
+
+-
+-

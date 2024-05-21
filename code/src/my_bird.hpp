@@ -22,6 +22,8 @@ namespace cgp
         mesh_drawable wing_son_left;
         mesh_drawable wing_son_right;
 
+        rotation_transform rotation_initial;
+
         timer_basic timer;
         cgp::hierarchy_mesh_drawable hierarchy;
 
@@ -29,5 +31,6 @@ namespace cgp
         void initializeBirdMesh();
         void drawBirdMesh(environment_structure &environment);
         void translateBirdMesh(float dx, float dy, float dz);
+        void rotateBirdMesh(const mat3 &camera_matrix);
     };
 }

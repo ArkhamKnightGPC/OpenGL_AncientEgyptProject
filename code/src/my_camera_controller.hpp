@@ -29,6 +29,7 @@ namespace cgp
 		// This method must be called at the initialization before any other action handling
 		void initialize(input_devices& inputs, window_structure& window);
 
+		void update(mat4& camera_matrix_view);
 		void action_mouse_click(mat4&) {};
 
 		// Pointers to the global state of the inputs (keyboard, mouse, etc)
@@ -36,24 +37,22 @@ namespace cgp
 		// Pointer to the global state of the window
 		window_structure* window = nullptr;
 
-		camera_first_person_euler camera_model;
+		camera_first_person camera_model;
+
+		float speed = 0.05f; // default speed of the fly mode
+		float roll = 0.8f;   // roll magnitude
+		float pitch = 0.5f;  //pitch magnitude
+
+		float speed_increase = 1.02f;
+		float speed_max = 0.5f;
+		float speed_min = 0.0001f;
 
 		void action_mouse_move(mat4& camera_matrix_view);
-
-		void set_rotation_axis(vec3 const& rotation_axis);
-		void set_rotation_axis_x();
-		void set_rotation_axis_y();
-		void set_rotation_axis_z();
+		void idle_frame(mat4& camera_matrix_view);
 
 		// Key 'C' (in capital) to capture the cursor
 		void action_keyboard(mat4& camera_matrix_view);
 
-		// Keys up/down/left/right used to translate the camera
-		void idle_frame(mat4& camera_matrix_view);
-
-		void update(mat4& camera_matrix_view);
-
-		void look_at(vec3 const& eye, vec3 const& center, vec3 const& unused = vec3() /*Only for compatibility*/);
 		std::string doc_usage() const;
 
 	protected:
