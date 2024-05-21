@@ -28,9 +28,9 @@ namespace cgp
 		// Assign the pointers of inputs and window to the global state
 		// This method must be called at the initialization before any other action handling
 		void initialize(input_devices& inputs, window_structure& window);
+		void look_at(vec3 const& eye, vec3 const& center, vec3 const& up);
 
 		void update(mat4& camera_matrix_view);
-		void action_mouse_click(mat4&) {};
 
 		// Pointers to the global state of the inputs (keyboard, mouse, etc)
 		input_devices* inputs = nullptr;
@@ -47,7 +47,7 @@ namespace cgp
 		float speed_max = 0.5f;
 		float speed_min = 0.0001f;
 
-		void action_mouse_move(mat4& camera_matrix_view);
+		//void action_mouse_move(mat4& camera_matrix_view);
 		void idle_frame(mat4& camera_matrix_view);
 
 		// Key 'C' (in capital) to capture the cursor

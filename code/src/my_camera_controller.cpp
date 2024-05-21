@@ -11,47 +11,18 @@ namespace cgp
 		window = &window_param;
 	}
 
+	void my_camera_controller::look_at(vec3 const& eye, vec3 const& center, vec3 const& up)
+	{
+		camera_model.look_at(eye, center, up);
+	}
+
 	void my_camera_controller::update(mat4& camera_matrix_view) {
 		camera_matrix_view = camera_model.matrix_view();
 	}
 
-	void my_camera_controller::action_mouse_move(mat4& camera_matrix_view)
+	void my_camera_controller::action_keyboard(mat4&)
 	{
-		// Preconditions
-		assert_cgp_no_msg(inputs != nullptr);
-		assert_cgp_no_msg(window != nullptr);
-		if (!is_active) return;
-
-		vec2 const& p1 = inputs->mouse.position.current;
-		vec2 const& p0 = inputs->mouse.position.previous;
-		vec2 const dp = p1 - p0;
-
-		bool const event_valid = !inputs->mouse.on_gui;
-		bool const click_left = inputs->mouse.click.left;
-		bool const click_right = inputs->mouse.click.right;
-		bool const ctrl = inputs->keyboard.ctrl;
-
-
-		if (event_valid) {
-			if (click_left || (is_cursor_trapped && !click_right)) {
-				camera_model.manipulator_rotate_roll_pitch_yaw(0, dp.y, -dp.x); // left drag => rotates
-				//if (!ctrl)
-				//	camera_model.manipulator_rotate_roll_pitch_yaw(0, dp.y, -dp.x); // left drag => rotates
-				//else
-				//	camera_model.manipulator_twist_rotation_axis(dp.x); // left drag + Ctrl => twist
-
-			}
-			else if (click_right)
-				camera_model.manipulator_translate_front((p1 - p0).y); // right draw => move front/back
-		}
-
-		update(camera_matrix_view);
-	}
-
-
-	void my_camera_controller::action_keyboard(mat4& )
-	{
-		if ( inputs->keyboard.last_action.is_pressed(GLFW_KEY_C) && inputs->keyboard.shift) {
+		if ( inputs->keyboard.last_action.is_pressed(GLFW_KEY_C) && inputs->keyboard.shift ) {
 			is_cursor_trapped = !is_cursor_trapped;
 			if (is_cursor_trapped)
 				glfwSetInputMode(window->glfw_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -65,33 +36,6 @@ namespace cgp
 		}
 	}
 
-	void my_camera_controller::action_mouse_move(mat4& camera_matrix_view)
-	{
-		// Preconditions
-		assert_cgp_no_msg(inputs != nullptr);
-		assert_cgp_no_msg(window != nullptr);
-		if (!is_active) return;
-
-		vec2 const& p1 = inputs->mouse.position.current;
-		vec2 const& p0 = inputs->mouse.position.previous;
-		vec2 const dp = p1 - p0;
-
-		bool const event_valid = !inputs->mouse.on_gui;
-		bool const click_left = inputs->mouse.click.left;
-
-		if (event_valid) {
-			if (!is_cursor_trapped) {
-				if (click_left)
-					camera_model.manipulator_rotate_roll_pitch_yaw(-dp.x, dp.y, 0);
-			}
-			else if (is_cursor_trapped)
-				camera_model.manipulator_rotate_roll_pitch_yaw(-dp.x, dp.y, 0);
-		}
-
-		update(camera_matrix_view);
-	}
-
-
 	void my_camera_controller::idle_frame(mat4& camera_matrix_view)
 	{
 		// Preconditions
@@ -99,25 +43,34 @@ namespace cgp
 		assert_cgp_no_msg(window != nullptr);
 		if (!is_active) return;
 
-		float const magnitude = inputs->time_interval;
-
-
-		if (inputs->keyboard.up || inputs->keyboard.is_pressed(GLFW_KEY_W))
-			camera_model.manipulator_rotate_roll_pitch_yaw(0, pitch * magnitude, 0);
-		if (inputs->keyboard.down || inputs->keyboard.is_pressed(GLFW_KEY_S))
-			camera_model.manipulator_rotate_roll_pitch_yaw(0, -pitch * magnitude, 0);
-
-		if (inputs->keyboard.left || inputs->keyboard.is_pressed(GLFW_KEY_A))
-			camera_model.manipulator_rotate_roll_pitch_yaw(roll * magnitude, 0.0f, 0.0f);
-		if (inputs->keyboard.right || inputs->keyboard.is_pressed(GLFW_KEY_D))
-			camera_model.manipulator_rotate_roll_pitch_yaw(-roll * magnitude, 0.0, 0.0f);
-
 		if (inputs->keyboard.is_pressed(GLFW_KEY_KP_ADD) || inputs->keyboard.is_pressed(GLFW_KEY_R))
 			speed = std::min(speed * speed_increase, speed_max);
 		if (inputs->keyboard.is_pressed(GLFW_KEY_KP_SUBTRACT) || inputs->keyboard.is_pressed(GLFW_KEY_F))
 			speed = std::max(speed / speed_increase, speed_min);
 
-		camera_model.manipulator_translate_front(speed * magnitude);
+		float const magnitude = 10*(inputs->time_interval)*speed;
+
+		//WASD used for camera rotations
+		if (inputs->keyboard.is_pressed(GLFW_KEY_W))
+			camera_model.manipulator_rotate_roll_pitch_yaw(0, pitch * magnitude, 0);
+		if (inputs->keyboard.is_pressed(GLFW_KEY_S))
+			camera_model.manipulator_rotate_roll_pitch_yaw(0, -pitch * magnitude, 0);
+
+		if (inputs->keyboard.is_pressed(GLFW_KEY_A))
+			camera_model.manipulator_rotate_roll_pitch_yaw(roll * magnitude, 0.0f, 0.0f);
+		if (inputs->keyboard.is_pressed(GLFW_KEY_D))
+			camera_model.manipulator_rotate_roll_pitch_yaw(-roll * magnitude, 0.0, 0.0f);
+
+		//IJKL used for camera translations
+		if (inputs->keyboard.is_pressed(GLFW_KEY_I))
+			camera_model.manipulator_translate_front(100*magnitude); // forward
+		if (inputs->keyboard.is_pressed(GLFW_KEY_K))
+			camera_model.manipulator_translate_front(-100*magnitude); // backward
+		
+		if (inputs->keyboard.is_pressed(GLFW_KEY_L))
+			camera_model.manipulator_translate_in_plane({-100*magnitude ,0 }); // right
+		if (inputs->keyboard.is_pressed(GLFW_KEY_J))
+			camera_model.manipulator_translate_in_plane({100*magnitude ,0 }); // left
 
 		update(camera_matrix_view);
 	}
