@@ -23,20 +23,6 @@ Then in the **project/code directory** directory, you can use the provided *CMak
 
 ## Controls
 
-### Displacement with WASD
+- Camera rotates using WASD
 
--
--
--
-
-### Displacement with arrows
-
--
--
--
--
-
-### Mouse controls
-
--
--
+- Camera translates using IJKL
