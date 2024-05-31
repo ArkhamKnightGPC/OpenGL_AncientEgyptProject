@@ -20,3 +20,9 @@ Then in the **project/code directory** directory, you can use the provided *CMak
 > make
 
 >./project
+
+## Controls
+
+- Camera rotates using WASD
+
+- Camera translates using IJKL
