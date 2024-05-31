@@ -44,8 +44,8 @@ void scene_structure::initialize()
 	// ********************************************** //
 	camera_control.initialize(inputs, window);
 	camera_control.look_at(//   look_at(camera_position, targeted_point, up_direction)
-		{100,0,50} /* position of the camera in the 3D scene */,
-		{-10,0,50} /* targeted point in 3D scene */,
+		{100,0,20} /* position of the camera in the 3D scene */,
+		{-10,0,20} /* targeted point in 3D scene */,
 		{0,0,1} /* direction of the "up" vector */);
 
 	// Display general information
@@ -101,6 +101,12 @@ void scene_structure::initialize()
 	tree.model.rotation = rotation_transform::from_axis_angle({ 1,0,0 }, Pi / 2.0f);
 	tree.model.scaling = 9;
 	tree.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/palm_tree/palm_tree.jpg", GL_REPEAT, GL_REPEAT);
+
+	treasures.push_back(Treasure(
+		project::path + "assets/treasures/bracelet.obj",
+		project::path + "assets/treasures/bracelet.png",
+		1,
+		vec3{0, 0, 5+height_map[std::pair<int, int>(0, 0)]}));
 
 	for(int i=0; i<100; i++){
 		// Generate random tree coordinates
@@ -194,6 +200,11 @@ void scene_structure::display_frame()
 	vec3 camera_position = camera_control.camera_model.position_camera;
 	bird_mesh.translateBirdMesh(camera_position[0]-20, camera_position[1], camera_position[2]-5); //we want bird to follow camera movement
 	bird_mesh.drawBirdMesh(environment);
+
+	for(auto &treasure : treasures){
+		treasure.drawSphere(environment);
+		treasure.drawReward(environment, camera_position);
+	}
 	
 	// Wait for the sound to finish playing
     if (SDL_GetQueuedAudioSize(deviceId) == 0) {
@@ -208,6 +219,12 @@ void scene_structure::display_gui()
 {
 	ImGui::Checkbox("Frame", &gui.display_frame);
 	ImGui::Checkbox("Wireframe", &gui.display_wireframe);
+	
+	int cnt = 0;
+	for(auto &treasure : treasures){
+		if(treasure.get_found())cnt++;
+	}
+	ImGui::Text("Treasure collected: %d out of %d", cnt, treasures.size());
 
 }
 
@@ -222,6 +239,12 @@ void scene_structure::mouse_click_event()
 }
 void scene_structure::keyboard_event()
 {
+	if (inputs.keyboard.is_pressed(GLFW_KEY_H)){//player tried to pick a treasure!!
+		vec3 camera_position = camera_control.camera_model.position_camera;
+		for(auto &treasure : treasures){
+			treasure.pickTreasure(camera_position);
+		}
+	}
 	camera_control.action_keyboard(environment.camera_view);
 }
 void scene_structure::idle_frame()

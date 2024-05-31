@@ -4,9 +4,9 @@
 #include "cgp/cgp.hpp"
 #include "environment.hpp"
 #include "pyramid.hpp"
-#include "terrain.hpp"
 #include "my_bird.hpp"
 #include "my_camera_controller.hpp"
+#include "treasure.hpp"
 #include <SDL.h>
 
 // This definitions allow to use the structures: mesh, mesh_drawable, etc. without mentionning explicitly cgp::
@@ -58,6 +58,7 @@ struct scene_structure : cgp::scene_inputs_generic {
 	mesh_drawable camel;
 	mesh_drawable sphinx;
 	mesh_drawable tree;
+	std::vector<Treasure> treasures;
 	BirdMesh bird_mesh;
 	std::vector<int> x_rand_trees, y_rand_trees;
 	std::map<std::pair<int,int>, float> height_map;
