@@ -60,11 +60,9 @@ struct scene_structure : cgp::scene_inputs_generic {
 	mesh_drawable tree;
 	BirdMesh bird_mesh;
 	std::vector<int> x_rand_trees, y_rand_trees;
+	std::map<std::pair<int,int>, float> height_map;
 
-	/* mesh_drawable water;
-	mesh_drawable tree;
-	mesh_drawable cube1;
-	mesh_drawable cube2; */
+	void deform_terrain(mesh& m);
 
 	mesh_drawable sphere_light;
 
