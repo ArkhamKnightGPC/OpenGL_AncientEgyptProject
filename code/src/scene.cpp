@@ -23,38 +23,14 @@ void generateRandomCoordinates(int& x_rand, int& y_rand) {
 }
 
 
-void deform_terrain(mesh& m)
+void scene_structure::deform_terrain(mesh& m)
 {
-
-	vec2 p_i[54] = { {-10,-10}, {5,5}, {-3,4}, {6,4}, {117,471}, {19,-120}, {311,102}, {-301,314}, {-178,446}, {-17,330}, {-356,-143}, {143,481}, {-337,-175}, {-160,295}, {-10,-184}, {295,126}, {271,-478}, {-297,392}, {-284,-262}, {132,389}, {-412,366}, {-229,197}, {28,-189}, {353,-371}, {-20,424}, {-366,-74}, {-8,354}, {229,466}, {-40,324}, {255,-187}, {130,308}, {450,-302}, {124,-27}, {-209,-468}, {467,230}, {-66,-167}, {-174,229}, {-449,419}, {224,-164}, {406,242}, {337,-423}, {175,-43}, {401,-347}, {226,-202}, {288,283}, {181,-175}, {67,185}, {-1,48}, {-450,-315}, {140,-416}, {-384,-350}, {142,-223}, {92,299}, {-145,-371} };
-	float h_i[54] = {3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f, 2.0f, 3.0f, -1.5f, 1.0f};
-    float sigma_i[54] = {10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3, 4, 4, 10, 3};
-
-	// Set the terrain to have a gaussian shape
-	for (int k = 0; k < 100; ++k)
-	{
-		int x_rand, y_rand;
-        generateRandomCoordinates(x_rand, y_rand);
-
-		float h_i = std::rand()*5;
-		float sigma_i = std::rand()*10;
-
+	for (int k = 0; k < m.position.size(); ++k){
 		vec3& p = m.position[k];
-		float d2 = p.x*p.x + p.y * p.y;
-
-		float z = 0;
-		for(int i=0; i<54; i++){
-			float d_i = norm(vec2(p.x, p.y) - p_i[i]) / (5*sigma_i/4);
-
-			float z_i = 4*h_i * std::exp(-d_i * d_i);
-
-			z += z_i;
-		} 
-		z = z + noise_perlin({ p.x,p.y });
-
+		float z = noise_perlin({p.x, p.y});
 		p = { p.x, p.y, z };
+		height_map[std::pair<int, int>(p.x, p.y)] = z;
 	}
-
 	m.normal_update();
 }
 
@@ -98,8 +74,8 @@ void scene_structure::initialize()
 
 	
 	float L = 1000.0f;
-	mesh terrain_mesh = mesh_primitive_grid({ -L,-L,0 }, { L,-L,0 }, { L,L,0 }, { -L,L,0 }, 100, 100);
-	//deform_terrain(terrain_mesh);
+	mesh terrain_mesh = mesh_primitive_grid({ -L,-L,0 }, { L,-L,0 }, { L,L,0 }, { -L,L,0 }, 1000, 1000);
+	deform_terrain(terrain_mesh);
 	terrain.initialize_data_on_gpu(terrain_mesh);
 	terrain.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/sand.jpg");
 
@@ -183,7 +159,8 @@ void scene_structure::display_frame()
 	}
 
 	for(int i=0; i<100; i++){
-		tree.model.translation = {x_rand_trees[i], y_rand_trees[i], 0};
+		float z_i = height_map[std::pair<int, int>(round(x_rand_trees[i]), round(y_rand_trees[i]))];
+		tree.model.translation = {x_rand_trees[i], y_rand_trees[i], z_i};
 		draw(tree, environment);
 	}
 
