@@ -23,6 +23,17 @@ Then in the **project/code directory** directory, you can use the provided *CMak
 
 ## Controls
 
-- Camera rotates using WASD
+- **I** to move forward
+- **J** to move left
+- **K** to move down
+- **L** to move right
 
-- Camera translates using IJKL
+- **W** to rotate upward
+- **A** to rotate left
+- **S** to rotate downward
+- **D** to rotate right
+
+- **R** to increase speed
+- **F** to decrease speed
+
+- **H** to pick treasure
