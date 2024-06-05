@@ -27,6 +27,7 @@ public:
 private:
     vec3 position;
     bool found;
+    int model_zoffset;
     int countdown_display;
 
     timer_basic timer;

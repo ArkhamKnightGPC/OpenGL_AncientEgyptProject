@@ -19,6 +19,8 @@ Treasure::Treasure(std::string path_to_obj, std::string path_to_texture, float s
     position = treasure_position;
     found = false;
     countdown_display = 150;
+
+    model_zoffset = 5 ? (path_to_obj.compare("assets/treasures/coin.obj") == 0) : 0;
 }
 
 Treasure::~Treasure(){
@@ -45,10 +47,11 @@ void Treasure::pickTreasure(vec3 camera_position){
 void Treasure::drawReward(environment_structure &environment, vec3 camera_position){
     if(found && countdown_display > 0){
         countdown_display -= 1;
-        //we will show the reward in front of the camera
-        reward.model.translation = {camera_position[0]-10, camera_position[1], camera_position[2]};
 
-        //and rotate it so player can get a good look at it
+        //we will show the reward in front of the camera
+        reward.model.translation = {camera_position[0]-10, camera_position[1], camera_position[2] + model_zoffset};
+
+        //androtate it so player can have a good look
         timer.update();
         const float minAngle = -M_PI / 6;
         const float maxAngle = M_PI / 6;

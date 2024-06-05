@@ -44,8 +44,8 @@ void scene_structure::initialize()
 	// ********************************************** //
 	camera_control.initialize(inputs, window);
 	camera_control.look_at(//   look_at(camera_position, targeted_point, up_direction)
-		{100,0,20} /* position of the camera in the 3D scene */,
-		{-10,0,20} /* targeted point in 3D scene */,
+		{100,0,30} /* position of the camera in the 3D scene */,
+		{-10,0,30} /* targeted point in 3D scene */,
 		{0,0,1} /* direction of the "up" vector */);
 
 	// Display general information
@@ -106,7 +106,25 @@ void scene_structure::initialize()
 		project::path + "assets/treasures/bracelet.obj",
 		project::path + "assets/treasures/bracelet.png",
 		1,
-		vec3{0, 0, 5+height_map[std::pair<int, int>(0, 0)]}));
+		vec3{0, 0, 1.6+height_map[std::pair<int, int>(0, 0)]}));
+
+	treasures.push_back(Treasure(
+		project::path + "assets/treasures/bracelet.obj",
+		project::path + "assets/treasures/blue_bracelet.png",
+		1,
+		vec3{-50, 100, 1.6+height_map[std::pair<int, int>(-50, 100)]}));
+
+	treasures.push_back(Treasure(
+		project::path + "assets/treasures/coin.obj",
+		project::path + "assets/treasures/coin.png",
+		0.8,
+		vec3{200, 100, 1.6+height_map[std::pair<int, int>(200, 100)]}));
+
+	treasures.push_back(Treasure(
+		project::path + "assets/treasures/pot.obj",
+		project::path + "assets/treasures/pot.jpg",
+		0.01,
+		vec3{300, -100, 1.6+height_map[std::pair<int, int>(300, -100)]}));
 
 	for(int i=0; i<100; i++){
 		// Generate random tree coordinates
@@ -224,7 +242,7 @@ void scene_structure::display_gui()
 	for(auto &treasure : treasures){
 		if(treasure.get_found())cnt++;
 	}
-	ImGui::Text("Treasure collected: %d out of %d", cnt, treasures.size());
+	ImGui::Text("Treasure collected: %d out of %d", cnt, (int)treasures.size());
 
 }
 
