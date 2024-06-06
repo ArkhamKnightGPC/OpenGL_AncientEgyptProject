@@ -130,8 +130,20 @@ void scene_structure::initialize()
 		// Generate random tree coordinates
 		int x_rand, y_rand;
         generateRandomCoordinates(x_rand, y_rand);
-		x_rand_trees.push_back(x_rand);
-		y_rand_trees.push_back(y_rand);
+		//lets make sure no two trees overlap
+		bool chk = true;
+		for(int j=0; j<x_rand_trees.size() && chk; j++){
+			double dist = pow(x_rand_trees[i] - x_rand, 2) + pow(y_rand_trees[i] - y_rand, 2);
+			if(dist < 2000){
+				chk = false;
+			}
+		}
+		if(chk){
+			x_rand_trees.push_back(x_rand);
+			y_rand_trees.push_back(y_rand);
+		}else{
+			i--;
+		}
 	}
 
 	sphere_light.initialize_data_on_gpu(sphere_mesh);
