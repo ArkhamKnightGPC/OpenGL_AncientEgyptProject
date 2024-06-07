@@ -54,8 +54,11 @@ struct scene_structure : cgp::scene_inputs_generic {
 	timer_basic timer;
 
 	mesh_drawable terrain;
-	mesh_drawable pyramid;
-	mesh_drawable camel;
+	mesh_drawable khufu_pyramid;
+    mesh_drawable khafre_pyramid;
+    mesh_drawable menkaure_pyramid;
+    mesh_drawable queen_pyramids;
+    mesh_drawable camel;
 	mesh_drawable sphinx;
 	mesh_drawable tree;
 	std::vector<Treasure> treasures;

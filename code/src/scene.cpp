@@ -68,12 +68,17 @@ void scene_structure::initialize()
 		project::path + "shaders/shading_custom/shading_custom.vert.glsl",
 		project::path + "shaders/shading_custom/shading_custom.frag.glsl");
 
+    //opengl_shader_structure shader_particles;
+    //shader_particles.load(
+    //        project::path + "shaders/particle/particle.vert.glsl",
+    //        project::path + "shaders/particle/particle.frag.glsl");
 
 	// Create the shapes seen in the 3D scene
 	// ********************************************** //
 
 	
 	float L = 1000.0f;
+
 	mesh terrain_mesh = mesh_primitive_grid({ -L,-L,0 }, { L,-L,0 }, { L,L,0 }, { -L,L,0 }, 1000, 1000);
 	deform_terrain(terrain_mesh);
 	terrain.initialize_data_on_gpu(terrain_mesh);
@@ -82,23 +87,39 @@ void scene_structure::initialize()
 	mesh pyramid_mesh = create_pyramid_mesh(10, 10, 0); pyramid_mesh.translate({10, 10, 0});
 	mesh sphere_mesh = mesh_primitive_sphere(100.0f, {0,0,300}, 40, 20);
 
-	pyramid.initialize_data_on_gpu(pyramid_mesh);
-	pyramid.model.scaling = 10;
-	pyramid.model.translation = {-350, -100, 0};
-	pyramid.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/pyramid.jpg", GL_REPEAT, GL_REPEAT);
+    mesh particle_mesh = mesh_primitive_sphere(0.02f);
+
+	khufu_pyramid.initialize_data_on_gpu(pyramid_mesh);
+    khufu_pyramid.model.scaling = 12;
+    khufu_pyramid.model.translation = {-50, 200, 0};
+    khufu_pyramid.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/pyramid.jpg", GL_REPEAT, GL_REPEAT);
+
+    khafre_pyramid.initialize_data_on_gpu(pyramid_mesh);
+    khafre_pyramid.model.scaling = 10;
+    khafre_pyramid.model.translation = {-350, -100, 0};
+    khafre_pyramid.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/pyramid.jpg", GL_REPEAT, GL_REPEAT);
+
+    menkaure_pyramid.initialize_data_on_gpu(pyramid_mesh);
+    menkaure_pyramid.model.scaling = 5;
+    menkaure_pyramid.model.translation = {-500, -200, 0};
+    menkaure_pyramid.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/pyramid.jpg", GL_REPEAT, GL_REPEAT);
+
+    queen_pyramids.initialize_data_on_gpu(pyramid_mesh);
+    queen_pyramids.model.scaling = 2;
+    queen_pyramids.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/pyramid.jpg", GL_REPEAT, GL_REPEAT);
 
 	camel.initialize_data_on_gpu(mesh_load_file_obj(project::path + "assets/ar0camel.obj"));
 	camel.model.scaling = 1;
 	camel.model.rotation = rotation_axis_angle({1,0,0}, Pi/2.0f);
 	camel.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/camleuvmap.png");
 
-	sphinx.initialize_data_on_gpu(mesh_load_file_obj(project::path + "assets/BMSudanSandstoneSphinx02.obj"));
-	sphinx.model.scaling = 8;
-	sphinx.model.rotation = rotation_axis_angle({1,0,0}, Pi/2.0f);
-	sphinx.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/BMSudanSandstoneSphinx01.jpg");
+	sphinx.initialize_data_on_gpu(mesh_load_file_obj(project::path + "assets/HatshepsutSphinx.obj"));
+	sphinx.model.scaling = 4;
+	sphinx.model.rotation = rotation_axis_angle({0,0,1}, Pi/2.0f);
+    sphinx.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/HatshepsutSphinx.jpg");
 
 	tree.initialize_data_on_gpu(mesh_load_file_obj(project::path + "assets/palm_tree/palm_tree.obj"));
-	tree.model.rotation = rotation_transform::from_axis_angle({ 1,0,0 }, Pi / 2.0f);
+	tree.model.rotation = rotation_transform::from_axis_angle({1,0,0 }, Pi / 2.0f);
 	tree.model.scaling = 9;
 	tree.texture.load_and_initialize_texture_2d_on_gpu(project::path + "assets/palm_tree/palm_tree.jpg", GL_REPEAT, GL_REPEAT);
 
@@ -146,10 +167,13 @@ void scene_structure::initialize()
 		}
 	}
 
-	sphere_light.initialize_data_on_gpu(sphere_mesh);
-	
-	pyramid.shader = shader_standard;
-	camel.shader = shader_standard;
+    sphere_light.initialize_data_on_gpu(sphere_mesh);
+
+	khufu_pyramid.shader = shader_standard;
+    khafre_pyramid.shader = shader_standard;
+    menkaure_pyramid.shader = shader_standard;
+    queen_pyramids.shader = shader_standard;
+    camel.shader = shader_standard;
 	terrain.shader = shader_standard;
 	sphinx.shader = shader_standard;
 
@@ -180,11 +204,16 @@ void scene_structure::display_frame()
 	
 	// Draw all the shapes
 	draw(terrain, environment);
-	draw(pyramid, environment);
-	sphinx.model.translation = { -60, 50, 0};
+	draw(khufu_pyramid, environment);
+    draw(khafre_pyramid, environment);
+    draw(menkaure_pyramid, environment);
+    sphinx.model.translation = { 150, 0, 35};
 	draw(sphinx, environment);
-	sphinx.model.translation = { -60, -50, 0};
-	draw(sphinx, environment);
+
+    for(int i=0; i<3; i++){
+        queen_pyramids.model.translation = { -550 + 50*i, -300, 0};
+        draw(queen_pyramids, environment);
+    }
 
 	for(int i=0; i<10; i++){
 		camel.model.translation = { -10 + 10*(i/2), -50 + 10*(i%2), 0};
@@ -209,7 +238,10 @@ void scene_structure::display_frame()
 
 	if (gui.display_wireframe) {
 		draw_wireframe(terrain, environment);
-		draw_wireframe(pyramid, environment);
+		draw_wireframe(khufu_pyramid, environment);
+        draw_wireframe(khafre_pyramid, environment);
+        draw_wireframe(menkaure_pyramid, environment);
+        draw_wireframe(queen_pyramids, environment);
 		draw_wireframe(camel, environment);
 		draw_wireframe(sphinx, environment);
 	}
@@ -238,7 +270,7 @@ void scene_structure::display_frame()
 		treasure.drawSphere(environment);
 		treasure.drawReward(environment, camera_position, camera_orientation);
 	}
-	
+
 	// Wait for the sound to finish playing
     if (SDL_GetQueuedAudioSize(deviceId) == 0) {
         // and play it again!!!!

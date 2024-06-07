@@ -50,7 +50,7 @@ namespace cgp
 
 		float const magnitude = 10*(inputs->time_interval)*speed;
 
-		//WASD used for camera rotations
+		//WASDQE used for camera rotations
 		if (inputs->keyboard.is_pressed(GLFW_KEY_W))
 			camera_model.manipulator_rotate_roll_pitch_yaw(0, pitch * magnitude, 0);
 		if (inputs->keyboard.is_pressed(GLFW_KEY_S))
@@ -60,6 +60,11 @@ namespace cgp
             camera_model.manipulator_rotate_roll_pitch_yaw(0, 0.0f, roll * magnitude);
 		if (inputs->keyboard.is_pressed(GLFW_KEY_D))
 			camera_model.manipulator_rotate_roll_pitch_yaw(0, 0.0, -roll * magnitude);
+
+        if (inputs->keyboard.is_pressed(GLFW_KEY_Q))
+            camera_model.manipulator_rotate_roll_pitch_yaw(roll * magnitude, 0.0f, 0.0f);
+        if (inputs->keyboard.is_pressed(GLFW_KEY_E))
+            camera_model.manipulator_rotate_roll_pitch_yaw(-roll * magnitude, 0.0f, 0.0f);
 
 		//IJKL used for camera translations
 		if (inputs->keyboard.is_pressed(GLFW_KEY_I))
