@@ -227,13 +227,16 @@ void scene_structure::display_frame()
 
 	environment.background_color = gui.fog_color;
 
-	vec3 camera_position = camera_control.camera_model.position_camera;
-	bird_mesh.translateBirdMesh(camera_position[0]-20, camera_position[1], camera_position[2]-5); //we want bird to follow camera movement
+    vec3 camera_position = camera_control.camera_model.position_camera;
+    mat3 camera_orientation = camera_control.camera_model.orientation().matrix();
+    vec3 relative_position = camera_orientation*vec3(0, -5, -20);
+    vec3 camera_vec = camera_position + relative_position;
+    bird_mesh.translateBirdMesh(camera_vec[0], camera_vec[1], camera_vec[2]); //we want bird to follow camera movement
 	bird_mesh.drawBirdMesh(environment);
 
 	for(auto &treasure : treasures){
 		treasure.drawSphere(environment);
-		treasure.drawReward(environment, camera_position);
+		treasure.drawReward(environment, camera_position, camera_orientation);
 	}
 	
 	// Wait for the sound to finish playing

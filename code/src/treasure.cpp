@@ -44,12 +44,14 @@ void Treasure::pickTreasure(vec3 camera_position){
     }
 }
 
-void Treasure::drawReward(environment_structure &environment, vec3 camera_position){
+void Treasure::drawReward(environment_structure &environment, vec3 camera_position, mat3 camera_orientation){
     if(found && countdown_display > 0){
         countdown_display -= 1;
 
         //we will show the reward in front of the camera
-        reward.model.translation = {camera_position[0]-10, camera_position[1], camera_position[2] + model_zoffset};
+        vec3 relative_position = camera_orientation*vec3(0, model_zoffset, -10);
+        vec3 camera_vec = camera_position+relative_position;
+        reward.model.translation = {camera_vec[0], camera_vec[1], camera_vec[2]};
 
         //androtate it so player can have a good look
         timer.update();

@@ -57,9 +57,9 @@ namespace cgp
 			camera_model.manipulator_rotate_roll_pitch_yaw(0, -pitch * magnitude, 0);
 
 		if (inputs->keyboard.is_pressed(GLFW_KEY_A))
-			camera_model.manipulator_rotate_roll_pitch_yaw(roll * magnitude, 0.0f, 0.0f);
+            camera_model.manipulator_rotate_roll_pitch_yaw(0, 0.0f, roll * magnitude);
 		if (inputs->keyboard.is_pressed(GLFW_KEY_D))
-			camera_model.manipulator_rotate_roll_pitch_yaw(-roll * magnitude, 0.0, 0.0f);
+			camera_model.manipulator_rotate_roll_pitch_yaw(0, 0.0, -roll * magnitude);
 
 		//IJKL used for camera translations
 		if (inputs->keyboard.is_pressed(GLFW_KEY_I))

@@ -22,7 +22,7 @@ public:
 
     void pickTreasure(vec3 camera_position);
 
-    void drawReward(environment_structure &environment, vec3 camera_position);
+    void drawReward(environment_structure &environment, vec3 camera_position, mat3 camera_orientation);
 
 private:
     vec3 position;
